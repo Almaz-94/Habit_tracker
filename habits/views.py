@@ -1,7 +1,10 @@
-from itertools import chain
+import os
+from datetime import datetime
 
+import requests
 from django.db.models import Q
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
@@ -11,21 +14,41 @@ from habits.permissions import IsHabitCreator
 from habits.serializers import HabitSerializer
 
 
+bot_token = os.getenv('TELEGRAM_API_KEY')
+
+
 class HabitViewSet(viewsets.ModelViewSet):
+
+    """ViewSet for Habit model"""
+
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
     pagination_class = HabitPaginator
 
+    @action(methods=["get"], detail=False, url_path="bot", url_name="bot")
+    def get_bot_link(self):
+        """Get tg bot link with /habits/bot/"""
+        link = f'https://api.telegram.org/bot{bot_token}/getMe'
+        name = requests.get(link).json()['result']['username']
+        return Response(data={'Telegram bot': f'https://t.me/{name}'}, status=status.HTTP_200_OK)
+
     def perform_create(self, serializer):
+        """Set current user to a Habit.creator field"""
         new_habit = serializer.save()
         new_habit.creator = self.request.user
         new_habit.save()
 
+
     def get_queryset(self):
+        """Return current user's habits alongside with public ones"""
         user_or_public_habits = Habit.objects.filter(Q(creator=self.request.user) | Q(is_public=True))
         return user_or_public_habits
 
     def get_permissions(self):
+        """
+        Habits can be created only by authenticated users
+        and changed only by their creators
+        """
         if self.action == 'create':
             permission_classes = [IsAuthenticated(), ]
         elif self.action in ['update', 'destroy', 'partial_update']:
@@ -33,15 +56,3 @@ class HabitViewSet(viewsets.ModelViewSet):
         else:
             return [AllowAny()]
         return permission_classes
-
-    # def create(self, request, *args, **kwargs):
-    #     action = request.data.get('action')
-    #     duration_time = request.data.get('duration_time')
-    #     time = request.data.get('time')
-    #     serializer = self.get_serializer(data={'creator': request.user.pk,
-    #                                            'action': action,
-    #                                            "duration_time": duration_time,
-    #                                            'time':time})
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     return Response({'Привычка создана'}, status=status.HTTP_201_CREATED)

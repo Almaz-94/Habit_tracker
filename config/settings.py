@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # 'corsheaders',
+    'corsheaders',
     'drf_yasg',
     'rest_framework',
     "rest_framework_simplejwt",
@@ -56,11 +56,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -157,7 +159,7 @@ SIMPLE_JWT = {
 }
 
 # URL-адрес брокера сообщений
-CELERY_BROKER_URL = 'redis://localhost:6379' # Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = 'redis://localhost:6379'
 
 # URL-адрес брокера результатов, также Redis
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -185,12 +187,10 @@ CSRF_TRUSTED_ORIGINS = [
 CELERY_BEAT_SCHEDULE = {
     'Check for new ids in bot': {
         'task': 'habits.tasks.get_chat_id_from_update',  # Путь к задаче
-        # 'schedule': timedelta(hours=12)
-        'schedule': timedelta(seconds=10)
+        'schedule': timedelta(minutes=1),
     },
     'remind through telegram bot': {
         'task': 'habits.tasks.send_reminder',  # Путь к задаче
-        # 'schedule': timedelta(hours=24)
-        'schedule': timedelta(seconds=10)
+        'schedule': timedelta(seconds=20)
     },
 }
