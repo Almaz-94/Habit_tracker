@@ -20,10 +20,11 @@ class HabitMaxDurationTimeValidator:
         self.duration_time = duration_time
 
     def __call__(self, value):
-        if not dict(value).get(self.duration_time):
+        dur_time = dict(value).get(self.duration_time)
+        if not dur_time:
             return
-        if dict(value).get(self.duration_time) > 120:
-            raise ValidationError('Время на выполнение привычки должно быть не больше 120 секунд')
+        if dur_time > 120 or dur_time <= 0:
+            raise ValidationError('Время на выполнение привычки должно быть положительным числом не превышающим 120')
 
 
 class HabitMaxPeriodValidator:
@@ -60,6 +61,5 @@ class HabitPracticeDateValidator:
         beg_date = dict(value).get(self.beginning_date)
         if not beg_date:
             return
-        # print(dict(value))
         if beg_date.date() < datetime.now().date():
             raise ValidationError(f'Дата начала привычки не может быть раньше {datetime.now().date()}')

@@ -19,7 +19,7 @@ def create_message(habit):
 
 
 def get_bot_link(*args):
-    """ Get tg bot link """
+    """Returns link to tg bot"""
     get_id_url = f'https://api.telegram.org/bot{bot_token}/getMe'
     name = requests.get(get_id_url).json()['result']['username']
     return Response(data={'Telegram bot': f'https://t.me/{name}'}, status=status.HTTP_200_OK)
