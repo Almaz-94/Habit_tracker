@@ -1,4 +1,5 @@
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, \
+    UpdateAPIView, ListAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import User

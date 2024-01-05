@@ -18,4 +18,3 @@ class HabitSerializer(serializers.ModelSerializer):
                       HabitLinkedValidator('linked_habit'),
                       HabitPracticeDateValidator('beginning_date')
                       ]
-

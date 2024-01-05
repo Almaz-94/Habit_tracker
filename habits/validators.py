@@ -33,8 +33,8 @@ class HabitMaxPeriodValidator:
         self.period = period
 
     def __call__(self, value):
-        if not dict(value).get(self.period):
-            return
+        if dict(value).get(self.period) < 1:
+            raise ValidationError('Периодичность привычки не может быть меньше 1')
         if dict(value).get(self.period) > 7:
             raise ValidationError('Периодичность привычки не должна превышать 7 дней')
 

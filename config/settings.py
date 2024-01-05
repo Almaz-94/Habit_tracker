@@ -186,11 +186,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 CELERY_BEAT_SCHEDULE = {
     'Check for new ids in bot': {
-        'task': 'habits.tasks.get_chat_id_from_update',  # Путь к задаче
+        'task': 'habits.tasks.get_chat_id_from_update',
         'schedule': timedelta(minutes=1),
     },
     'remind through telegram bot': {
-        'task': 'habits.tasks.send_reminder',  # Путь к задаче
-        'schedule': timedelta(seconds=20)
+        'task': 'habits.tasks.send_reminder',
+        'schedule': timedelta(seconds=50)
     },
 }

@@ -22,13 +22,12 @@ def send_reminder():
             continue
 
         message = create_message(habit)
-
-        if (datetime.now() + timedelta(minutes=30)).strftime("%H:%M") == habit.time.strftime("%H:%M"):
+        time_to_remind = (datetime.now() + timedelta(minutes=30)).strftime("%H:%M")
+        if time_to_remind == habit.time.strftime("%H:%M"):
             details = {'chat_id': habit.creator.chat_id, 'text': message}
             requests.get(send_message_url, params=details).json()
         habit.beginning_date += timedelta(days=habit.period)
         habit.save()
-
 
 
 @shared_task
@@ -39,14 +38,16 @@ def get_chat_id_from_update():
     get_id_url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
     response = requests.get(get_id_url)
 
-    if response.status_code == 200:
-        for update in response.json()['result']:
-            tg_username = update['message']['chat']['username']
-            chat_id = update['message']['chat']['id']
-            try:
-                user = User.objects.get(telegram_username=tg_username)
-            except User.DoesNotExist:
-                continue
-            if not user.chat_id:
-                user.chat_id = chat_id
-                user.save()
+    if response.status_code != 200:
+        return
+
+    for update in response.json()['result']:
+        tg_username = update['message']['chat']['username']
+        chat_id = update['message']['chat']['id']
+        try:
+            user = User.objects.get(telegram_username=tg_username)
+        except User.DoesNotExist:
+            continue
+        if not user.chat_id:
+            user.chat_id = chat_id
+            user.save()
