@@ -11,6 +11,12 @@ class UserCreateAPIView(CreateAPIView):
     """View for creating instance of User model"""
     serializer_class = UserSerializer
 
+    def perform_create(self, serializer):
+        """Sets password provided by the user in the request as his password"""
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()
+
 
 class UserUpdateAPIView(UpdateAPIView):
     """View for updating instance of User model"""

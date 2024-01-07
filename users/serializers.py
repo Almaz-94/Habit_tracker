@@ -6,15 +6,6 @@ from users.models import User
 
 class UserSerializer(ModelSerializer):
     """Serializer for User model"""
-    def create(self, validated_data):
-        """Sets password provided by the user in the request as his password"""
-        password = validated_data.pop('password')
-        instance = self.Meta.model(**validated_data)
-        if password:
-            instance.set_password(password)
-        instance.save()
-        return instance
-
     class Meta:
         model = User
         fields = '__all__'
