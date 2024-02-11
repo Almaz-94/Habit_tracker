@@ -1,19 +1,10 @@
 # SPA приложение - трекер привычек
 
 
+## Запуск приложения
+ Запустить докер-контейнер командой: 
 
-## Для работы с проектом необходимо выполнить следующие действия:
-
-- Клонировать репозиторий.
-- Установить зависимости pip install -r requirements.txt
-- Создать файл .env, заполнить его данными из файла env.sample
-- Установить и запустить Redis
-- Создать базу данных в PostgreSQL CREATE DATABASE <DBname>
-- Создать миграции: python manage.py makemigrations 
-- Применить миграции: python manage.py migrate
-- Запустить проект python manage.py runserver
-- Запустить celery worker командой: celery -A config worker -l info -P eventlet, celery -A config Beat -l info -S django
-- Запустить celery beat командой: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+`docker-compose up --build`
 
 ## Решены следующие задачи:
 
@@ -83,5 +74,5 @@
 
 Документация для API реализована с помощью drf-yasg и находится на следующих эндпоинтах:
 
-- http://127.0.0.1:8000/docs/
-- http://127.0.0.1:8000/redoc/
+- http://localhost:8000/docs/
+- http://localhost:8000/redoc/

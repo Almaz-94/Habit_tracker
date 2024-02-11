@@ -32,14 +32,14 @@ class HabitViewSet(viewsets.ModelViewSet):
         return Response(data={'Telegram bot': f'https://t.me/{name}'}, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
-        """Set current user as a creator of habit"""
+        """Set current user as a creator of the habit"""
         new_habit = serializer.save()
         new_habit.creator = self.request.user
         new_habit.save()
 
     def get_queryset(self):
         """Returns current user's habits alongside public ones"""
-        user_or_public_habits = Habit.objects.filter(Q(creator=self.request.user) | Q(is_public=True))
+        user_or_public_habits = Habit.objects.filter(is_public=True)
         return user_or_public_habits
 
     def get_permissions(self):
@@ -52,5 +52,5 @@ class HabitViewSet(viewsets.ModelViewSet):
         elif self.action in ['update', 'destroy', 'partial_update']:
             permission_classes = [IsHabitCreator(), ]
         else:
-            return [AllowAny()]
+            return [AllowAny(), ]
         return permission_classes
