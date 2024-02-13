@@ -93,7 +93,7 @@ dotenv.load_dotenv()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_NAME'),
+        'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('POSTGRES_HOST'),
@@ -190,7 +190,7 @@ CSRF_TRUSTED_ORIGINS = [
 CELERY_BEAT_SCHEDULE = {
     'Check for new ids in bot': {
         'task': 'habits.tasks.get_chat_id_from_update',
-        'schedule': timedelta(minutes=1),
+        'schedule': timedelta(minutes=10),
     },
     'remind through telegram bot': {
         'task': 'habits.tasks.send_reminder',
